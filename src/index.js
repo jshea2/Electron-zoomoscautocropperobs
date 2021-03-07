@@ -695,7 +695,6 @@ setTimeout(() => {
   mainWindow.webContents.send("isretina", isRetina)
   //Remove Names
   removeNames = openArray[17]
-  console.log("poop" + removeNames);
   mainWindow.webContents.send("removenames", removeNames)
   //Auto Connect on Startup
   if(openArray[18] === 'true'){
