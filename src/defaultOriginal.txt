@@ -1,0 +1,19 @@
+OBSosc Config File:
+127.0.0.1
+4444
+secret
+127.0.0.1
+3333
+false
+127.0.0.1
+53000
+/cue/
+/start
+127.0.0.1
+1234
+9090
+1920
+1080
+1
+false
+false

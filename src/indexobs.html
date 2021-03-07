@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Populate OBS Scenes</title>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+   <div class="box">
+    <div id="content" >
+      <!-- <span class="label">OBSosc</span> -->
+      <form action="#" id="ipcForm2">
+        <br>
+        <span class="label2">Create OBS Scenes with Sources</span>
+        <br>  
+        Number of Scenes: <label for="obssceneauto"></label>
+              <input type="text" id="obssceneauto" value="" size="2">
+              </br>
+</br>
+        <input class="button2" id="submit" type="submit" value="Add">
+      </form>
+   </div>
+    <script>
+      const electron = require('electron')
+      const ipcRenderer = electron.ipcRenderer
+      // ipcRenderer.send('poop1', inputs)
+
+      const submitFormButton = document.querySelector("#ipcForm2");
+
+      submitFormButton.addEventListener("submit", function(event){
+        event.preventDefault();   // stop the form from submitting
+        let obssceneauto
+
+        obssceneauto = document.getElementById("obssceneauto").value;
+        document.getElementById("obssceneauto").value = obssceneauto
+        ipcRenderer.send('obssceneauto', obssceneauto)
+        window.close()
+        //console.log(`This is input for ip ${obsip}`)     
+});
+       
+    </script>
+  </body>
+</html>

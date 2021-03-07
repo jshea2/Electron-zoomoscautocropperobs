@@ -1,0 +1,75 @@
+{
+  "name": "autocropper",
+  "productName": "AutoCropper_for_ZoomOSC/OBS",
+  "version": "1.1.0",
+  "description": "AutoCrop ZoomOSC Gallery Boxes to OBS",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "build": "electron-packager . Node-OBSosc --ignore=node_modules/electron-packager && cp electron.icns Node-OBSosc-darwin-x64/Node-OBSosc.app/Contents/Resources/electron.icns",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\"",
+    "build-installer": "electron-builder",
+    "make-mac": "npx @electron-forge/cli make --platform darwin",
+    "package-mac": "electron-packager . AutoCropper_for_ZoomOSC/OBS --ignore=node_modules/electron-packager --ignore=release_builds --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --extra-resource=./src/extraResources/icon.png --out=release-builds",
+    "package-win": "electron-packager . AutoCropper_for_ZoomOSC/OBS --ignore=node_modules/electron-packager --overwrite --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --extra-resource=./src/extraResources/icon.png --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"AutoCropper\"",
+    "package-linux": "electron-packager . LIFX_Art-Net --ignore=node_modules/electron-packager --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"
+  },
+  "build": {
+    "appId": "my-app",
+    "mac": {
+      "icon": "src/Node-OBSosc.ico"
+    },
+    "win": {
+      "icon": "src/Node-OBSosc.ico"
+    }
+  },
+  "keywords": [],
+  "author": {
+    "name": "Joe Shea",
+    "email": "jshea2@users.noreply.github.com"
+  },
+  "license": "MIT",
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "./src/Node-OBSosc.ico"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-base",
+          "config": {
+            "name": "OBSosc"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-base",
+          "platforms": [
+            "win32"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-base",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-base",
+          "config": {}
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "electron-pdf-window": "^1.0.12",
+    "electron-squirrel-startup": "^1.0.0",
+    "node-osc": "^5.2.2",
+    "obs-websocket-js": "^4.0.2"
+  },
+  "devDependencies": {
+    "create-electron-app": "^1.0.0",
+    "electron": "^11.0.3",
+    "electron-packager": "^15.1.0"
+  }
+}
