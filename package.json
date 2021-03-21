@@ -1,7 +1,7 @@
 {
   "name": "autocropper",
   "productName": "AutoCropper_for_ZoomOSC/OBS",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "AutoCrop ZoomOSC Gallery Boxes to OBS",
   "main": "src/index.js",
   "scripts": {

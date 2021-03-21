@@ -17,6 +17,7 @@ let zoomoscupdate
 let zoomoscinclude
 let zoomosclist
 let zoomoscgalleryview
+let isPinned = 0
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -718,130 +719,156 @@ setTimeout(() => {
 ipcMain.on("submitted", (event, data) => {
     // Open the DevTools.
     mainWindow.setSize(500,780)
-  mainWindow.webContents.openDevTools();
+mainWindow.webContents.openDevTools();
 })
 
-  ipcMain.on("obsip", (event, data) => {
-    obsIp = data
-    console.log(data)
-  })
+ipcMain.on("obsip", (event, data) => {
+obsIp = data
+console.log(data)
+})
 
-  ipcMain.on("obsport", (event, data) => {
-    obsPort = data
-    console.log(data)
-  })
+ipcMain.on("obsport", (event, data) => {
+obsPort = data
+console.log(data)
+})
 
-  ipcMain.on("obspassword", (event, data) => {
-    obsPassword = data
-    console.log(data)
-  })
+ipcMain.on("obspassword", (event, data) => {
+obsPassword = data
+console.log(data)
+})
 
-  ipcMain.on("oscinip", (event, data) => {
-    oscServerIp = data
-    console.log(data)
-  })
+ipcMain.on("oscinip", (event, data) => {
+oscServerIp = data
+console.log(data)
+})
 
-  ipcMain.on("oscinport", (event, data) => {
-    oscPortIn = data
-    console.log(data)
-  })
+ipcMain.on("oscinport", (event, data) => {
+oscPortIn = data
+console.log(data)
+})
 
-  ipcMain.on("enableoscout", (event, data) => {
-    enableObs2App = data
-    console.log(data)
-  })
+ipcMain.on("enableoscout", (event, data) => {
+enableObs2App = data
+console.log(data)
+})
 
-  ipcMain.on("oscoutip", (event, data) => {
-    oscClientIp = data
-    console.log(data)
-  })
+ipcMain.on("oscoutip", (event, data) => {
+oscClientIp = data
+console.log(data)
+})
 
-  ipcMain.on("oscoutport", (event, data) => {
-    oscPortOut = data
-    console.log(data)
-  })
+ipcMain.on("oscoutport", (event, data) => {
+oscPortOut = data
+console.log(data)
+})
 
-  ipcMain.on("oscoutprepend", (event, data) => {
-    oscOutPrefix = data
-    console.log(data)
-  })
+ipcMain.on("oscoutprepend", (event, data) => {
+oscOutPrefix = data
+console.log(data)
+})
 
-  ipcMain.on("oscoutpostpend", (event, data) => {
-    oscOutSuffix = data
-    console.log(data)
-  })
+ipcMain.on("oscoutpostpend", (event, data) => {
+oscOutSuffix = data
+console.log(data)
+})
 
-  ipcMain.on("zoomoscinip", (event, data) => {
-    zoomOSCClientIp = data
-    console.log(data)
-  })
+ipcMain.on("zoomoscinip", (event, data) => {
+zoomOSCClientIp = data
+console.log(data)
+})
 
-  ipcMain.on("zoomoscinport", (event, data) => {
-    zoomOSCPortIn = data
-    console.log(data)
-  })
+ipcMain.on("zoomoscinport", (event, data) => {
+zoomOSCPortIn = data
+console.log(data)
+})
 
-  ipcMain.on("zoomoscoutport", (event, data) => {
-    zoomOSCPortOut = data
-    console.log(data)
-  })
+ipcMain.on("zoomoscoutport", (event, data) => {
+zoomOSCPortOut = data
+console.log(data)
+})
 
-  ipcMain.on("screenwidth", (event, data) => {
-    screenWidth = data
-    console.log(data)
-  })
+ipcMain.on("screenwidth", (event, data) => {
+screenWidth = data
+console.log(data)
+})
 
-  ipcMain.on("screenheight", (event, data) => {
-    screenHeight = data
-    console.log(data)
-  })
+ipcMain.on("screenheight", (event, data) => {
+screenHeight = data
+console.log(data)
+})
 
-  ipcMain.on("isretina", (event, data) => {
-    isRetina = data
-    //console.log("this is retina" + data)
-  })
+ipcMain.on("isretina", (event, data) => {
+isRetina = data
+//console.log("this is retina" + data)
+})
 
-  ipcMain.on("removenames", (event, data) => {
-    removeNames = data
-    console.log(data)
-  })
+ipcMain.on("removenames", (event, data) => {
+removeNames = data
+console.log(data)
+})
 
-  ipcMain.on("obssceneauto", (event, data) => {
-    logEverywhere(`Created ${data} OBS Scenes`)
-    // for (i = 1; i < parseInt(data) + 1; i++) {
-    //     console.log(i.toString())
-    let i = 1
-    function myLoop () {
+ipcMain.on("obssceneauto", (event, data) => {
+logEverywhere(`Created ${data} OBS Scenes`)
+// for (i = 1; i < parseInt(data) + 1; i++) {
+//     console.log(i.toString())
+let i = 1
+function myLoop () {
+    setTimeout(() => {
+        obs.send('CreateScene', {
+            sceneName: `${i}`
+        }).catch((err)=>{
+            console.log(err);
+        })
+
         setTimeout(() => {
-            obs.send('CreateScene', {
-                sceneName: `${i}`
-            }).catch((err)=>{
-                console.log(err);
-            })
-
-            setTimeout(() => {
-                obs.send('CreateSource', {
-                    sourceName: `Display Capture ${i}`,
-                    sourceKind: "display_capture",
-                    sceneName: `${i}`,
-                    sourceSettings: {
-                        display: 1,
-                        show_cursor: false
-                    }
-            }).catch((err)=>{
-                console.log(err)
-            })
-            i++
-            }, 25);
-
-            if(i < parseInt(data)){
-            myLoop()
-        }
-        }, 50);
-    }
-    myLoop()
-//}
+            obs.send('CreateSource', {
+                sourceName: `Display Capture ${i}`,
+                sourceKind: "display_capture",
+                sceneName: `${i}`,
+                sourceSettings: {
+                    display: 1,
+                    show_cursor: false
+                }
+        }).then(() => {
+            obs.send("GetVideoInfo").then(data => {
     
+                obs.send("SetSceneItemProperties", {
+                "scene-name": `${i}`,
+                item: {
+                    name: `Display Capture ${i}`,
+                },
+                position: {
+                    x: 0,
+                    y: 0
+                },
+                bounds: {
+                   type: "OBS_BOUNDS_SCALE_INNER",
+                   x: data.baseWidth,
+                   y: data.baseHeight
+                }
+            }).catch(() => {
+                console.log("Error: Select A Scene Item in OBS for Size")
+                logEverywhere("ERROR: Invalid Size Syntax. See Help > API")
+            })
+            
+            }).catch(() => {
+                console.log("Error: Select A Scene Item in OBS for Size")
+                logEverywhere("ERROR: Invalid Size Syntax. See Help > API")
+            })
+        }).catch((err)=>{
+            console.log(err)
+        })
+        i++
+        }, 25);
+
+        if(i < parseInt(data)){
+        myLoop()
+    }
+    }, 50);
+}
+myLoop()
+//}
+
 })
 
   function logEverywhere(message) {
@@ -856,13 +883,6 @@ ipcMain.on("submitted", (event, data) => {
       logging = undefined
     }
   }, 500);
-
-//   setInterval(() => {
-//     os.cpuUsage(function(v){
-//       console.log('cpu usage (%): ' + v*100)
-//       mainWindow.webContents.send('cpu',v*100)
-//     })
-//   }, 1000);
 
 
 //NODE-OBSosc
@@ -944,61 +964,50 @@ obs.connect({
         logEverywhere("ERROR: Make Sure OBS is Running, Websocket Plugin is Installed, and IP/Port/Password are Correct")
     });
 
-    //Qlab AutoPopulate Function
-    qlabCue = function createQlabCues() {
-        obs.send('GetSceneList').then(data => {
-            data.scenes.forEach(i => {
-                client.send("/new", "network", "1", (err) => {
-                    if (err) console.error(err);
-                        })
-                client.send("/cue/selected/customString", `/scene "${i.name}"`, (err) => {
-                    if (err) console.error(err);
-                        })
-                client.send("/cue/selected/name", `${i.name}`, (err) => {
-                    if (err) console.error(err);
-                        })
-            })
-        })
-    }
-
-
-    //List Scene Items Function
-    listSceneItems = function listSceneItems(){
-        return obs.send("GetSceneList").then(data => {
-            logEverywhere("--- Available Scene Items: ---")
-            // logEverywhere(data.name)
-            // logEverywhere(msg[1])
-            data.scenes.forEach(i => {
-                obs.send("GetSceneItemList", {
-                    'sceneName': i.name,
-                }).then(data => {
-                    data.sceneItems.forEach(j => {
-                        console.log(j)
-                        logEverywhere(j.sourceName)
+//Qlab AutoPopulate Function
+qlabCue = function createQlabCues() {
+    obs.send('GetSceneList').then(data => {
+        data.scenes.forEach(i => {
+            client.send("/new", "network", "1", (err) => {
+                if (err) console.error(err);
                     })
-                }).catch(error => {
-                    logEverywhere("ERROR: Invalid Syntax")
-                })
-            })
-    
+            client.send("/cue/selected/customString", `/scene "${i.name}"`, (err) => {
+                if (err) console.error(err);
+                    })
+            client.send("/cue/selected/name", `${i.name}`, (err) => {
+                if (err) console.error(err);
+                    })
         })
-    }
+    })
+}
+//List Scene Items Function
+listSceneItems = function listSceneItems(){
+    return obs.send("GetSceneList").then(data => {
+        logEverywhere("--- Available Scene Items: ---")
+        // logEverywhere(data.name)
+        // logEverywhere(msg[1])
+        data.scenes.forEach(i => {
+            obs.send("GetSceneItemList", {
+                'sceneName': i.name,
+            }).then(data => {
+                data.sceneItems.forEach(j => {
+                    console.log(j)
+                    logEverywhere(j.sourceName)
+                })
+            }).catch(error => {
+                logEverywhere("ERROR: Invalid Syntax")
+            })
+        })
 
-//Listen and Log When New Scene is Activated
-// obs.on('SwitchScenes', data => {
-//     console.log(`New Active Scene: ${data.sceneName}`);
-//     // logEverywhere(`New Active Scene: ${data.sceneName}`)
-// });
-
-let currentSceneItem
+    })
+}
 //Save Scene Item as Variable
+let currentSceneItem
 obs.on("SceneItemSelected", data => {
     currentSceneItem = data['item-name']
     logEverywhere("Selected Scene Item: " + currentSceneItem)
     
 })
-
-
 // Handler to Avoid Uncaught Exceptions.
 obs.on('error', err => {
     console.error('socket error:', err);
@@ -1064,7 +1073,7 @@ zoomoscgalleryview = function zoomoscgalleryview(){
 //OSC -> OBS
 server.on('message', (msg) => {
     //Trigger Scene by Index Number
-  if (msg[0] === "/scene" && typeof msg[1] === 'number'){ 
+    if (msg[0] === "/scene" && typeof msg[1] === 'number'){ 
       console.log("number thing works")                                     //When OSC Recieves a /scene do...
       var oscMessage = msg[1] - 1;                                          //Convert Index Number to Start at 1
       var oscMessage = Math.floor(oscMessage);                              //Converts Any Float Argument to Lowest Integer
@@ -1079,7 +1088,6 @@ server.on('message', (msg) => {
             logEverywhere("Error: Out Of '/scene' Range")                   //Catch Error
         });
     } 
-
     //Trigger Scene if Argument is a String and Contains a Space
     else if (msg[0] === "/scene" && msg.length > 2){                      //When OSC Recieves a /scene do...                                       
         var firstIndex = msg.shift();                                       //Removes First Index from 'msg' and Stores it to Another Variable
@@ -1097,82 +1105,76 @@ server.on('message', (msg) => {
               console.log(err) 
               logEverywhere(err)                                                           //Catch Error
           });
-      } 
-      
-      //Trigger Scene if Argument is a String
-      else if (msg[0] === "/scene" && typeof msg[1] === 'string'){          //When OSC Recieves a /scene do...
-        var oscMessage = msg[1]; 
-      return obs.send('GetSceneList').then(data => {                         //Request Scene List Array
-          console.log(`OSC IN: ${msg[0]} ${oscMessage}`)
-          logEverywhere(`OSC IN: ${msg[0]} ${oscMessage}`)
-          obs.send("SetCurrentScene", {
-              'scene-name': oscMessage                                       //Set to Scene from OSC
-              }).catch(() => {
-                console.log(`Error: There is no Scene "${msg[1]}" in OBS. Double check case sensitivity.`);
-                logEverywhere(`Error: There is no Scene "${msg[1]}" in OBS. Double check case sensitivity.`);
-
-              })
-          }).catch((err) => {
-              console.log(err) 
-              logEverywhere(err)                                                           //Catch Error
-          });
-      } 
-
-      //Trigger Scene if Scene Name is in the OSC String
-      else if (msg[0].includes('/scene') && msg.length === 1){
-        var msgArray = msg[0].split("/")
-        msgArray.shift()
-        msgArray.shift()
+    } 
+    //Trigger Scene if Argument is a String
+    else if (msg[0] === "/scene" && typeof msg[1] === 'string'){          //When OSC Recieves a /scene do...
+    var oscMessage = msg[1]; 
+    return obs.send('GetSceneList').then(data => {                         //Request Scene List Array
+        console.log(`OSC IN: ${msg[0]} ${oscMessage}`)
+        logEverywhere(`OSC IN: ${msg[0]} ${oscMessage}`)
         obs.send("SetCurrentScene", {
-            'scene-name': msgArray[0].split("_").join(" ").toString(),                                          //Set to Scene from OSC
+            'scene-name': oscMessage                                       //Set to Scene from OSC
             }).catch(() => {
-              console.log(`Error: There is no Scene "${msgArray}" in OBS. Double check case sensitivity.`);
-              logEverywhere(`Error: There is no Scene "${msgArray}" in OBS. Double check case sensitivity.`);
-
-            }).catch((err) => {
-            console.log(err) 
-            logEverywhere(err)                                               //Catch Error
-        });
-      }
-
-    //Trigger Preview Scene if Argument is a String
-      else if (msg[0] === "/previewScene" && typeof msg[1] === 'string'){          //When OSC Recieves a /scene do...
-        var oscMessage = msg[1]; 
-          logEverywhere(`OSC IN: ${msg[0]} ${oscMessage}`)
-          obs.send("SetPreviewScene", {
-              'scene-name': oscMessage                                       //Set to Scene from OSC
-              }).catch(() => {
-                console.log(`Error: There is no Scene "${msg[1]}" in OBS. Double check case sensitivity.`);
-                logEverywhere(`Error: There is no Scene "${msg[1]}" in OBS. Double check case sensitivity.`);
-              })
-      }
-
-    //Trigger Preview Scene if Scene Name is in the OSC String
-      else if (msg[0].includes('/previewScene') && msg.length === 1){
-        var msgArray = msg[0].split("/")
-        msgArray.shift()
-        msgArray.shift()
-        obs.send("SetPreviewScene", {
-            'scene-name': msgArray[0].split("_").join(" ").toString(),                                          //Set to Scene from OSC
-            }).catch(() => {
-              console.log(`Error: There is no Scene "${msgArray}" in OBS. Double check case sensitivity.`);
-              logEverywhere(`Error: There is no Scene "${msgArray}" in OBS. Double check case sensitivity.`);
+            console.log(`Error: There is no Scene "${msg[1]}" in OBS. Double check case sensitivity.`);
+            logEverywhere(`Error: There is no Scene "${msg[1]}" in OBS. Double check case sensitivity.`);
 
             })
-      }
+        }).catch((err) => {
+            console.log(err) 
+            logEverywhere(err)                                                           //Catch Error
+        });
+    } 
+    //Trigger Scene if Scene Name is in the OSC String
+    else if (msg[0].includes('/scene') && msg.length === 1){
+    var msgArray = msg[0].split("/")
+    msgArray.shift()
+    msgArray.shift()
+    obs.send("SetCurrentScene", {
+        'scene-name': msgArray[0].split("_").join(" ").toString(),                                          //Set to Scene from OSC
+        }).catch(() => {
+            console.log(`Error: There is no Scene "${msgArray}" in OBS. Double check case sensitivity.`);
+            logEverywhere(`Error: There is no Scene "${msgArray}" in OBS. Double check case sensitivity.`);
 
-      //Trigger StudioMode Transition
-      else if (msg[0] === "/studioTransition"){
-        obs.send("TransitionToProgram", {
-            'with-transition': {
-                name: msg[1],
-                duration: msg[2]
-            }
+        }).catch((err) => {
+        console.log(err) 
+        logEverywhere(err)                                               //Catch Error
+    });
+    }
+    //Trigger Preview Scene if Argument is a String
+    else if (msg[0] === "/previewScene" && typeof msg[1] === 'string'){          //When OSC Recieves a /scene do...
+    var oscMessage = msg[1]; 
+        logEverywhere(`OSC IN: ${msg[0]} ${oscMessage}`)
+        obs.send("SetPreviewScene", {
+            'scene-name': oscMessage                                       //Set to Scene from OSC
+            }).catch(() => {
+            console.log(`Error: There is no Scene "${msg[1]}" in OBS. Double check case sensitivity.`);
+            logEverywhere(`Error: There is no Scene "${msg[1]}" in OBS. Double check case sensitivity.`);
+            })
+    }
+    //Trigger Preview Scene if Scene Name is in the OSC String
+    else if (msg[0].includes('/previewScene') && msg.length === 1){
+    var msgArray = msg[0].split("/")
+    msgArray.shift()
+    msgArray.shift()
+    obs.send("SetPreviewScene", {
+        'scene-name': msgArray[0].split("_").join(" ").toString(),                                          //Set to Scene from OSC
+        }).catch(() => {
+            console.log(`Error: There is no Scene "${msgArray}" in OBS. Double check case sensitivity.`);
+            logEverywhere(`Error: There is no Scene "${msgArray}" in OBS. Double check case sensitivity.`);
+
         })
-      }
-      
-      //Triggers to "GO" to the Next Scene
-      else if (msg[0] === "/go"){                                          //When OSC Recieves a /go do...
+    }
+    //Trigger StudioMode Transition
+    else if (msg[0] === "/studioTransition"){
+    obs.send("TransitionToProgram", {
+        'with-transition': {
+            name: msg[1],
+            duration: msg[2]
+        }
+    })
+    }
+    //Triggers to "GO" to the Next Scene
+    else if (msg[0] === "/go"){                                          //When OSC Recieves a /go do...
             
         return obs.send('GetSceneList').then(data => {                      //Request Scene List Array
             
@@ -1197,7 +1199,6 @@ server.on('message', (msg) => {
             });
         })
     } 
-    
     //Triggers Previous Scene to go "BACK"
     else if (msg[0] === "/back"){                                                 //Same Concept as Above Except Going to the Previous Scene
 
@@ -1335,7 +1336,6 @@ server.on('message', (msg) => {
 
         })
     } 
-
     //Triggers Filter Visibility On/Off
     else if (msg[0].includes('filterVisibility')){
         console.log(`OSC IN: ${msg}`)
@@ -1358,30 +1358,27 @@ server.on('message', (msg) => {
 
         })
     }
-    
-        //SetTextFreetype2 Text
-        else if (msg[0].includes('setText')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            console.log(msgArray[0])
-            console.log(msg[1]);
-            obs.send("SetTextFreetype2Properties", {
-                'source': msgArray[0].split('_').join(' '),
-                'text': msg[1].toString(),
-                'font': {
-                    size: msg[2],
-                    face: msg[3]
-                }
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Source Name and Filter name. [Source_Name]/setText [string], example: /text1/setText 'new text who dis?'")
-                logEverywhere("Error: Invalid Syntax. Make Sure There Are NO SPACES in Source Name and Filter name. [Source_Name]/setText [string], example: /text1/setText 'new text who dis?'")
-    
-            })
-        }
+    //SetTextFreetype2 Text
+    else if (msg[0].includes('setText')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        console.log(msgArray[0])
+        console.log(msg[1]);
+        obs.send("SetTextFreetype2Properties", {
+            'source': msgArray[0].split('_').join(' '),
+            'text': msg[1].toString(),
+            'font': {
+                size: msg[2],
+                face: msg[3]
+            }
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Source Name and Filter name. [Source_Name]/setText [string], example: /text1/setText 'new text who dis?'")
+            logEverywhere("Error: Invalid Syntax. Make Sure There Are NO SPACES in Source Name and Filter name. [Source_Name]/setText [string], example: /text1/setText 'new text who dis?'")
 
-
+        })
+    }
     //Triggers the Source Opacity (via Filter > Color Correction)
     else if (msg[0].includes('opacity')){
         console.log(`OSC IN: ${msg[0]} ${msg[1]}`)
@@ -1398,7 +1395,6 @@ server.on('message', (msg) => {
 
         })  
     }
-    
     //Adjsuts the Source's Gamma via Color Correction Filter
     else if (msg[0].includes('/gamma')){
         console.log(`OSC IN: ${msg[0]} ${msg[1]}`)
@@ -1415,7 +1411,6 @@ server.on('message', (msg) => {
 
         })  
     }
-
     //Adjsuts the Source's Contrast via Color Correction Filter
     else if (msg[0].includes('/contrast')){
         console.log(`OSC IN: ${msg[0]} ${msg[1]}`)
@@ -1432,7 +1427,6 @@ server.on('message', (msg) => {
 
         })  
     }
-
     //Adjsuts the Source's Brightness via Color Correction Filter
     else if (msg[0].includes('/brightness')){
         console.log(`OSC IN: ${msg[0]} ${msg[1]}`)
@@ -1449,7 +1443,6 @@ server.on('message', (msg) => {
 
         })  
     }
-
     //Adjsuts the Source's Saturation via Color Correction Filter
     else if (msg[0].includes('/saturation')){
         console.log(`OSC IN: ${msg[0]} ${msg[1]}`)
@@ -1466,7 +1459,6 @@ server.on('message', (msg) => {
 
         })  
     }
-
     //Adjsuts the Source's Hue Shift via Color Correction Filter
     else if (msg[0].includes('/hueShift')){
         console.log(`OSC IN: ${msg[0]} ${msg[1]}`)
@@ -1483,7 +1475,6 @@ server.on('message', (msg) => {
 
         })  
     }
-
     //Set Transition Type and Duration
     else if (msg[0].includes('/transition')){
             console.log(`OSC IN: ${msg}`)
@@ -1526,7 +1517,6 @@ server.on('message', (msg) => {
             } 
         }
     }
-    
     //Source Position Translate
     else if (msg[0].includes('position')){
         console.log(`OSC IN: ${msg}`)
@@ -1544,7 +1534,6 @@ server.on('message', (msg) => {
             logEverywhere("ERROR: Invalid Position Name. See Help > API")
         })
     }
-
     //Source Scale Translate
     else if (msg[0].includes('scale')){
         console.log(`OSC IN: ${msg}`)
@@ -1561,213 +1550,217 @@ server.on('message', (msg) => {
             logEverywhere("ERROR: Invalid Scale Syntax. See Help > API")
         })
     } 
+    //Source Rotation Translate
+    else if (msg[0].includes('rotate')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        obs.send("SetSceneItemProperties", {
+            'scene-name': msgArray[0].split('_').join(' ').toString(),
+            'item': msgArray[1].split('_').join(' ').toString(),
+            'rotation': msg[1]
+        }).catch(() => {
+            console.log("Error: Invalid Rotation Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Scene Name]/[Source Name]/rotate 0 or 1, example: /Wide/VOX/rotate 1")
+            logEverywhere("Error: Invalid Rotation Syntax. See Help > API")
+        })
+    }
+    //Triggers Source UnMute
+    else if (msg[0].includes('unmute')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        obs.send("SetMute", {
+            'source': msgArray[0].split('_').join(' ').toString(),
+            'mute': false,
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mute 0 or 1, example: /Audio/mute 1")
+            logEverywhere("ERROR: Invalid Unmute Syntax. See Help > API")
+        })
+    }
+    //Triggers Source Mute
+    else if (msg[0].includes('mute')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        obs.send("SetMute", {
+            'source': msgArray[0].split('_').join(' ').toString(),
+            'mute': true,
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mute 0 or 1, example: /Audio/mute 1")
+            logEverywhere("ERROR: Invalid Mute Syntax. See Help > API")
+        })
+    }
+    //Adjust Source Volume
+    else if (msg[0].includes('volume')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        obs.send("SetVolume", {
+            'source': msgArray[0].split('_').join(' ').toString(),
+            'volume': msg[1],
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/volume 0-1, example: /Audio/volume 1")
+            logEverywhere("ERROR: Invalid Volume Syntax. See Help > API")
 
-        //Source Rotation Translate
-        else if (msg[0].includes('rotate')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            obs.send("SetSceneItemProperties", {
-                'scene-name': msgArray[0].split('_').join(' ').toString(),
-                'item': msgArray[1].split('_').join(' ').toString(),
-                'rotation': msg[1]
-            }).catch(() => {
-                console.log("Error: Invalid Rotation Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Scene Name]/[Source Name]/rotate 0 or 1, example: /Wide/VOX/rotate 1")
-                logEverywhere("Error: Invalid Rotation Syntax. See Help > API")
-            })
-        }
-        
-        //Triggers Source UnMute
-        else if (msg[0].includes('unmute')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            obs.send("SetMute", {
-                'source': msgArray[0].split('_').join(' ').toString(),
-                'mute': false,
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mute 0 or 1, example: /Audio/mute 1")
-                logEverywhere("ERROR: Invalid Unmute Syntax. See Help > API")
-            })
-        }
+        })
+    }
+    //Set Sources Audio Monitor Off
+    else if (msg[0].includes('monitorOff')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        console.log(msgArray[0])
+        obs.send("SetAudioMonitorType", {
+            'sourceName': msgArray[0].split('_').join(' ').toString(),
+            'monitorType': "none",
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/volume 0-1, example: /Audio/volume 1")
+            logEverywhere("ERROR: Invalid Monitor Off Syntax. See Help > API")
 
-        //Triggers Source Mute
-        else if (msg[0].includes('mute')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            obs.send("SetMute", {
-                'source': msgArray[0].split('_').join(' ').toString(),
-                'mute': true,
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mute 0 or 1, example: /Audio/mute 1")
-                logEverywhere("ERROR: Invalid Mute Syntax. See Help > API")
-            })
-        }
+        })
+    }
+    //Set Sources Audio Monitor Only
+    else if (msg[0].includes('monitorOnly')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        console.log(msgArray[0])
+        obs.send("SetAudioMonitorType", {
+            'sourceName': msgArray[0].split('_').join(' ').toString(),
+            'monitorType': "monitorOnly",
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/volume 0-1, example: /Audio/volume 1")
+            logEverywhere("ERROR: Invalid Monitor Only Syntax. See Help > API")
 
-        //Adjust Source Volume
-        else if (msg[0].includes('volume')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            obs.send("SetVolume", {
-                'source': msgArray[0].split('_').join(' ').toString(),
-                'volume': msg[1],
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/volume 0-1, example: /Audio/volume 1")
-                logEverywhere("ERROR: Invalid Volume Syntax. See Help > API")
-    
-            })
-        }
+        })
+    }
+    //Set Sources Audio MonitorandOutput
+    else if (msg[0].includes('monitorAndOutput')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        console.log(msgArray[0])
+        obs.send("SetAudioMonitorType", {
+            'sourceName': msgArray[0].split('_').join(' ').toString(),
+            'monitorType': "monitorAndOutput",
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/volume 0-1, example: /Audio/volume 1")
+            logEverywhere("ERROR: Invalid Monitor and Output Syntax. See Help > API")
 
-        //Set Sources Audio Monitor Off
-        else if (msg[0].includes('monitorOff')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            console.log(msgArray[0])
-            obs.send("SetAudioMonitorType", {
-                'sourceName': msgArray[0].split('_').join(' ').toString(),
-                'monitorType': "none",
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/volume 0-1, example: /Audio/volume 1")
-                logEverywhere("ERROR: Invalid Monitor Off Syntax. See Help > API")
-    
-            })
-        }
+        })
+    }
+    //Open Projector
+    else if (msg[0].includes('openProjector')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        obs.send("OpenProjector", {
+            'type': msgArray[0].split('_').join(' ').toString(),
+            'monitor': msg[1],
+            'name': msg[2]
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaPlay, example: /Media_Source/mediaPlay")
+            logEverywhere("ERROR: Invalid Open Projector Syntax. See Help > API")
 
-        //Set Sources Audio Monitor Only
-        else if (msg[0].includes('monitorOnly')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            console.log(msgArray[0])
-            obs.send("SetAudioMonitorType", {
-                'sourceName': msgArray[0].split('_').join(' ').toString(),
-                'monitorType': "monitorOnly",
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/volume 0-1, example: /Audio/volume 1")
-                logEverywhere("ERROR: Invalid Monitor Only Syntax. See Help > API")
-    
-            })
-        }
+        })
+    }
+    //Media Play
+    else if (msg[0].includes('mediaPlay')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        obs.send("PlayPauseMedia", {
+            'sourceName': msgArray[0].split('_').join(' ').toString(),
+            'playPause': false,
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaPlay, example: /Media_Source/mediaPlay")
+            logEverywhere("ERROR: Invalid Media Play Syntax. See Help > API")
 
-        //Set Sources Audio MonitorandOutput
-        else if (msg[0].includes('monitorAndOutput')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            console.log(msgArray[0])
-            obs.send("SetAudioMonitorType", {
-                'sourceName': msgArray[0].split('_').join(' ').toString(),
-                'monitorType': "monitorAndOutput",
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/volume 0-1, example: /Audio/volume 1")
-                logEverywhere("ERROR: Invalid Monitor and Output Syntax. See Help > API")
-    
-            })
-        }
+        })
+    }
+    //Media Pause
+    else if (msg[0].includes('mediaPause')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        obs.send("PlayPauseMedia", {
+            'sourceName': msgArray[0].split('_').join(' ').toString(),
+            'playPause': true,
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaPause, example: /Media_Source/mediaPause")
+            logEverywhere("ERROR: Invalid Media Pause Syntax. See Help > API")
 
-        //Open Projector
-        else if (msg[0].includes('openProjector')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            obs.send("OpenProjector", {
-                'type': msgArray[0].split('_').join(' ').toString(),
-                'monitor': msg[1],
-                'name': msg[2]
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaPlay, example: /Media_Source/mediaPlay")
-                logEverywhere("ERROR: Invalid Open Projector Syntax. See Help > API")
-    
-            })
-        }
+        })
+    }
+    //Media Restart
+    else if (msg[0].includes('mediaRestart')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        obs.send("RestartMedia", {
+            'sourceName': msgArray[0].split('_').join(' ').toString()
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaRestart, example: /Media_Source/mediaRestart")
+            logEverywhere("ERROR: Invalid Media Restart Syntax. See Help > API")
 
-        //Media Play
-        else if (msg[0].includes('mediaPlay')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            obs.send("PlayPauseMedia", {
-                'sourceName': msgArray[0].split('_').join(' ').toString(),
-                'playPause': false,
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaPlay, example: /Media_Source/mediaPlay")
-                logEverywhere("ERROR: Invalid Media Play Syntax. See Help > API")
-    
-            })
-        }
+        })
+    }
+    //Media Stop
+    else if (msg[0].includes('mediaStop')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        obs.send("StopMedia", {
+            'sourceName': msgArray[0].split('_').join(' ').toString()
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaStop, example: /Media_Source/mediaStop")
+            logEverywhere("ERROR: Invalid Media Stop Syntax. See Help > API")
 
-        //Media Pause
-        else if (msg[0].includes('mediaPause')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            obs.send("PlayPauseMedia", {
-                'sourceName': msgArray[0].split('_').join(' ').toString(),
-                'playPause': true,
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaPause, example: /Media_Source/mediaPause")
-                logEverywhere("ERROR: Invalid Media Pause Syntax. See Help > API")
-    
-            })
-        }
+        })
+    }
+    //Media Stop
+    else if (msg[0].includes('refreshBrowser')){
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        obs.send("RefreshBrowserSource", {
+            'sourceName': msgArray[0].split('_').join(' ').toString()
+        }).catch(() => {
+            console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaStop, example: /Media_Source/mediaStop")
+            logEverywhere("ERROR: Invalid Refresh Browser Syntax. See Help > API")
 
-        //Media Restart
-        else if (msg[0].includes('mediaRestart')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            obs.send("RestartMedia", {
-                'sourceName': msgArray[0].split('_').join(' ').toString()
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaRestart, example: /Media_Source/mediaRestart")
-                logEverywhere("ERROR: Invalid Media Restart Syntax. See Help > API")
-    
-            })
-        }
+        })
+    }
+    //Set Source Collection
+    else if (msg[0] === "/setSceneCollection"){
+        obs.send("SetCurrentSceneCollection", {
+            'sc-name': msg[1].toString()
+        }).catch(() => {
+            logEverywhere("ERROR: Invalid) Refresh Browser Syntax. See Help > API")
+        })
+    }
+    //Set Profile
+    else if (msg[0] === "/setProfile"){
+        obs.send("SetCurrentProfile", {
+            'profile-name': msg[1].toString()
+        }).catch(() => {
+            logEverywhere("ERROR: Invalid) Refresh Browser Syntax. See Help > API")
+        })
+    }
 
-        //Media Stop
-        else if (msg[0].includes('mediaStop')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            obs.send("StopMedia", {
-                'sourceName': msgArray[0].split('_').join(' ').toString()
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaStop, example: /Media_Source/mediaStop")
-                logEverywhere("ERROR: Invalid Media Stop Syntax. See Help > API")
-    
-            })
-        }
-
-        //Media Stop
-        else if (msg[0].includes('refreshBrowser')){
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            obs.send("RefreshBrowserSource", {
-                'sourceName': msgArray[0].split('_').join(' ').toString()
-            }).catch(() => {
-                console.log("Error: Invalid Syntax. Make Sure There Are NO SPACES in Scene Name and Source Name. /[Source Name]/mediaStop, example: /Media_Source/mediaStop")
-                logEverywhere("ERROR: Invalid Refresh Browser Syntax. See Help > API")
-    
-            })
-        }
 
     // ----- TouchOSC COMMANDS: ------
     else if (msg[0] === '/logAllSceneItems'){
@@ -1793,9 +1786,7 @@ server.on('message', (msg) => {
 
     })
     }
-
-
-        //Source Position Select Move
+    //Source Position Select Move
     else if (msg[0] === '/addSceneItem'){
         return obs.send("GetCurrentScene").then(data => {
         console.log(`OSC IN: ${msg}`)
@@ -1812,7 +1803,6 @@ server.on('message', (msg) => {
         })
     })
     }
-
     //Source Position Select Move
     else if (msg[0] === '/move'){
         return obs.send("GetCurrentScene").then(data => {
@@ -1834,52 +1824,48 @@ server.on('message', (msg) => {
         })
     })
     }
-
-        //Source Position Select MoveX
-        else if (msg[0] === '/movex'){
-            return obs.send("GetCurrentScene").then(data => {
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            var x = Math.floor((msg[1]*2000))
-            var y = Math.floor((msg[1]*2000) + 960)
-            console.log(x + " " + y)
-            logEverywhere(x + " " + y)
-            obs.send("SetSceneItemProperties", {
-                'scene-name': data.name,
-                'item': currentSceneItem,
-                'position': { 'x': x + 540, 'alignment': 0}
-            }).catch(() => {
-                console.log("ERROR: Invalis Position Syntax")
-                logEverywhere("ERROR: Invalid Move X Syntax. See Help > API")
-            })
+    //Source Position Select MoveX
+    else if (msg[0] === '/movex'){
+        return obs.send("GetCurrentScene").then(data => {
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        var x = Math.floor((msg[1]*2000))
+        var y = Math.floor((msg[1]*2000) + 960)
+        console.log(x + " " + y)
+        logEverywhere(x + " " + y)
+        obs.send("SetSceneItemProperties", {
+            'scene-name': data.name,
+            'item': currentSceneItem,
+            'position': { 'x': x + 540, 'alignment': 0}
+        }).catch(() => {
+            console.log("ERROR: Invalis Position Syntax")
+            logEverywhere("ERROR: Invalid Move X Syntax. See Help > API")
         })
-        }
-
-        //Source Position Select MoveY
-        else if (msg[0] === '/movey'){
-            return obs.send("GetCurrentScene").then(data => {
-            console.log(`OSC IN: ${msg}`)
-            logEverywhere(`OSC IN: ${msg}`)
-            var msgArray = msg[0].split("/")
-            msgArray.shift()
-            var x = Math.floor((msg[2]*2000))
-            var y = Math.floor((msg[1]*2000) + 960)
-            console.log(x + " " + y)
-            logEverywhere(x + " " + y)
-            obs.send("SetSceneItemProperties", {
-                'scene-name': data.name,
-                'item': currentSceneItem,
-                'position': { 'y': y, 'alignment': 0}
-            }).catch(() => {
-                console.log("ERROR: Invalis Position Syntax")
-                logEverywhere("ERROR: Invalid Move Y Syntax. See Help > API")
-            })
+    })
+    }
+    //Source Position Select MoveY
+    else if (msg[0] === '/movey'){
+        return obs.send("GetCurrentScene").then(data => {
+        console.log(`OSC IN: ${msg}`)
+        logEverywhere(`OSC IN: ${msg}`)
+        var msgArray = msg[0].split("/")
+        msgArray.shift()
+        var x = Math.floor((msg[2]*2000))
+        var y = Math.floor((msg[1]*2000) + 960)
+        console.log(x + " " + y)
+        logEverywhere(x + " " + y)
+        obs.send("SetSceneItemProperties", {
+            'scene-name': data.name,
+            'item': currentSceneItem,
+            'position': { 'y': y, 'alignment': 0}
+        }).catch(() => {
+            console.log("ERROR: Invalis Position Syntax")
+            logEverywhere("ERROR: Invalid Move Y Syntax. See Help > API")
         })
-        }
-
-        
+    })
+    } 
     //Source Align
     else if (msg[0] === '/align'){
         return obs.send("GetCurrentScene").then(data => {
@@ -1899,7 +1885,6 @@ server.on('message', (msg) => {
         })
     })
     }
-
     //Set Transition Override
     else if(msg[0].includes('/transOverrideType')){
         console.log(`OSC IN: ${msg}`)
@@ -1917,7 +1902,6 @@ server.on('message', (msg) => {
         })
     })
     }
-
     //Set Transition Override
     else if(msg[0] === '/transOverrideDuration'){
         let currentSceneName
@@ -1939,7 +1923,6 @@ server.on('message', (msg) => {
         })
     })
     }
-
     //Source Size
     else if (msg[0] === '/size'){
         return obs.send("GetCurrentScene").then(data => {
@@ -1955,7 +1938,88 @@ server.on('message', (msg) => {
         })
     })
     }
-
+    //Fit to Screen
+    else if (msg[0] === '/fitToScreen'){
+            return obs.send("GetCurrentScene").then(data => {
+                console.log(`OSC IN: ${msg}`)
+                logEverywhere(`OSC IN: ${msg}`)
+                let currentScene = data
+            obs.send("GetVideoInfo").then(data => {
+    
+                obs.send("SetSceneItemProperties", {
+                "scene-name": currentScene.name.toString(),
+                item: {
+                    name: currentSceneItem.toString(),
+                },
+                position: {
+                    x: 0,
+                    y: 0
+                },
+                bounds: {
+                   type: "OBS_BOUNDS_SCALE_INNER",
+                   x: data.baseWidth,
+                   y: data.baseHeight
+                }
+            }).catch(() => {
+                console.log("Error: Select A Scene Item in OBS for Size")
+                logEverywhere("ERROR: Invalid Size Syntax. See Help > API")
+            })
+            
+            }).catch(() => {
+                console.log("Error: Select A Scene Item in OBS for Size")
+                logEverywhere("ERROR: Invalid Size Syntax. See Help > API")
+            })
+        }).catch(() => {
+            console.log("Error: Select A Scene Item in OBS for Size")
+            logEverywhere("ERROR: Invalid Size Syntax. See Help > API")
+        })
+    }
+    //Duplicate Current Scene
+    else if (msg[0] === '/duplicateCurrentScene'){
+        return obs.send("GetCurrentScene").then(data => {
+            console.log(`OSC IN: ${msg}`)
+            logEverywhere(`OSC IN: ${msg}`)
+            let currentScene = data
+            console.log(currentScene)
+            console.log(currentScene.sources[0].name)
+                obs.send("CreateScene", {
+                    sceneName: `${currentScene.name} 2`
+                }).then(() => {
+                    currentScene.sources.forEach(item => {
+                        obs.send("DuplicateSceneItem", {
+                         fromScene: currentScene.name,
+                         toScene: `${currentScene.name} 2`,
+                         item: {
+                             name: item.name,
+                             id: item.id
+                         }
+                        })
+                    })
+                }).catch((err) => {
+                    console.log(err)
+                    if (err.error === "scene with this name already exists"){
+                        obs.send("CreateScene", {
+                            sceneName: `${currentScene.name} 2 3`
+                        }).then(() => {
+                            currentScene.sources.forEach(item => {
+                                obs.send("DuplicateSceneItem", {
+                                 fromScene: currentScene.name,
+                                 toScene: `${currentScene.name} 2 3`,
+                                 item: {
+                                     name: item.name,
+                                     id: item.id
+                                 }
+                                })
+                            })
+                        }).catch(()=>{console.log("Same Name")})
+                    }
+                    console.log("Error: Select A Scene Item in OBS for Size")
+            })
+        }).catch(() => {
+            console.log("Error: Select A Scene Item in OBS for Size")
+            logEverywhere("ERROR: Invalid Size Syntax. See Help > API")
+        })
+    }
     //Log Error
     else {
         console.log("Error: Invalid OSC command. Please refer to Node OBSosc on Github for Command List")
@@ -1979,19 +2043,9 @@ obs.on('TransitionBegin', data => {
     })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+//
+//AutoCropper Code
+//
 
     function calcDimensionsForShape(frameWidth, frameHeight, boxCount, aspectRatio, spacing, rows, cols) {
         // pack the frames together by removing the spacing between them
@@ -2073,16 +2127,14 @@ obs.on('TransitionBegin', data => {
      * @param itemCount Number of boxes to lay out
      * @returns an array of crop values for a bunch of zoom boxes
      */
-    function autoCropZoomGallery(sourceWidth, sourceHeight, itemCount, cropName, multiplier, extraTopMargin, galRows, galCols) {
-    
+     function autoCropZoomGallery(sourceWidth, sourceHeight, itemCount, cropName, multiplier, galRows, galCols, topMarginOverride, bottomMarginOverride) {
         const ASPECTRATIO = 16 / 9;
-        const TOPMARGIN = 45;
-        const BOTTOMMARGIN = 59;
+        const TOPMARGIN = (topMarginOverride && topMarginOverride >= 0) ? topMarginOverride : 45;
+        const BOTTOMMARGIN = (bottomMarginOverride && topMarginOverride >= 0) ? bottomMarginOverride : 59;
         const LEFTMARGIN = RIGHTMARGIN = 6;
         const SPACING = 6;
-    
         // these work for me ymmv
-        const topMargin = (extraTopMargin + TOPMARGIN) * multiplier;
+        const topMargin = TOPMARGIN * multiplier;
         const bottomMargin = BOTTOMMARGIN * multiplier;
         const spacing = SPACING * multiplier;
         let leftMargin = rightMargin = LEFTMARGIN * multiplier;
@@ -2143,28 +2195,22 @@ obs.on('TransitionBegin', data => {
     
         return result;
     }
-    
+
     let galleryCount
-    
+    //On GalleryOrder Start AutoCropper
     serverZoom.on('message', (msg) => {
         console.log(msg)
-        // if(msg[0] === "/zoomosc/galleryCount"){
-        //     msg[1] = galleryCount
-        //     console.log(msg)
-        // }
     
         if(removeNames == "false"){
             removeNames = false
         } else if(removeNames == "true"){
             removeNames = true
         }
-
-        setTimeout(() => {
-            
+        setTimeout(() => { 
         if(msg[0] === "/zoomosc/galleryOrder"){
             console.log("This is msg length " + msg.length)
             galleryCount = msg.length - 1
-            const autoCrop = autoCropZoomGallery(parseInt(screenWidth), parseInt(screenHeight), galleryCount, removeNames, parseInt(isRetina), 0,0,0)
+            const autoCrop = autoCropZoomGallery(parseInt(screenWidth), parseInt(screenHeight), galleryCount, removeNames, parseInt(isRetina),0,0,0,0)
             // console.log(autoCrop)
             // console.log(autoCrop[1].left)
             msg.shift()
@@ -2180,7 +2226,6 @@ obs.on('TransitionBegin', data => {
             }).catch((err) => {console.log(err)})
             })
         }
-    
     }, 0);
     
     })
@@ -2196,7 +2241,6 @@ serverZoom.on('message', (msg) => {
             console.log(err)
         })
     } 
-    
     else if (msg[0] === "/zoomosc/vid/on" || msg[0] === "/zoomosc/video/on" || msg[0] === "/zoomosc/user/videoOn"){
         setTimeout(() => {
         obs.send("SetSceneItemProperties", {
